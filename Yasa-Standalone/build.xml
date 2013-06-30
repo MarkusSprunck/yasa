@@ -1,0 +1,42 @@
+<project name="yasa" default="run" basedir=".">
+	<description>   
+		Creates a jar file
+    </description>
+
+	
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="bin.dir" location="${basedir}/bin" />
+
+	<path id="run.classpath">
+		<pathelement path="${bin.dir}" />
+		<pathelement path="${basedir}/lib/junit.jar" />
+		<pathelement path="${basedir}/lib/log4j-1.2.13.jar" />
+		<pathelement path="${basedir}/lib/commons-lang-2.4.jar" />
+	</path>
+
+	<!-- -->
+	<target name="compile" description="Compile the entire project.">
+		<mkdir dir="${bin.dir}" />
+		<javac debug="true" debuglevel="lines, source" srcdir="${src.dir}" destdir="${bin.dir}" classpathref="run.classpath" />
+	</target>
+	
+	<!--ANT 1.7 is required                                        -->
+	<target name="jar">
+		<jar destfile="${basedir}/yasa.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="com.sw_engineering_candies.yasa.Starter" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${basedir}/bin" />
+			<zipfileset excludes="META-INF/*.SF" src="${basedir}/lib/junit.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${basedir}/lib/log4j-1.2.13.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="${basedir}/lib/commons-lang-2.4.jar" />
+		</jar>
+	</target>
+
+	<!-- -->
+	<target name="run" description="Run the build" depends="compile, jar">
+	</target>
+
+</project>
