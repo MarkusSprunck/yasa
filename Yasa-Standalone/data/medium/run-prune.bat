@@ -1,1 +1,0 @@
-java -jar ..\..\yasa.jar -f yasa-input-data.csv -p 40
