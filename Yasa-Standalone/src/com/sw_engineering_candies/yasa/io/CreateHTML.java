@@ -87,7 +87,7 @@ public final class CreateHTML {
 				fw.append("		</table>");
 				fw.append("		<p/>");
 				fw.append(" 		<object data=\"yasa-output.txt\" type=\"text/plain\" width=\"1018\" height=\"1260\" border=\"0\">");
-				fw.append("   			Ihr Browser kann das Objekt leider nicht anzeigen!");
+				fw.append("   			Your browser can't display the element!");
 				fw.append("  		</object>");
 				fw.append("    		</td>");
 				fw.append("		</font>");
