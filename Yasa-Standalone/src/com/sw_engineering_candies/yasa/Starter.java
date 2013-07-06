@@ -112,7 +112,7 @@ public final class Starter {
 			return;
 		}
 
-		if (new ImportCSV().importModel(sa, fileNameCallerCallee, fileNameNodeCluster, prune)) {
+		if (new ImportCSV(sa, prune ).importModel(fileNameCallerCallee, fileNameNodeCluster)) {
 
 			// 1. optimize the position
 			final CreateSVG createSVG = new CreateSVG();

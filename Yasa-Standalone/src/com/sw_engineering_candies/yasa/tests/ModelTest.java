@@ -45,7 +45,7 @@ public class ModelTest {
 	public static final String IMPORT_PATH = ".\\data\\small\\";
 
 	static final String IMPORT_FILE_NOT_VALID = "import file not valid";
-	
+
 	static final String YASA_INPUT_CSV = "input-caller-callee.csv";
 	static final String YASA_INPUT_NODE_CLUSTER_CSV = "input-node-cluster.csv";
 
@@ -57,8 +57,8 @@ public class ModelTest {
 	@BeforeClass
 	public static void importTestData() {
 		SA = new Model();
-		Assert.assertTrue(IMPORT_FILE_NOT_VALID, new ImportCSV().importModel(SA, ModelTest.IMPORT_PATH
-				+ "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv", 10));
+		Assert.assertTrue(IMPORT_FILE_NOT_VALID,
+				new ImportCSV(SA, 10).importModel(ModelTest.IMPORT_PATH + "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv"));
 		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 36, SA.getNodeCount());
 		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 43, SA.getLinkCount());
 		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 4, SA.getClusterCount());
@@ -91,8 +91,8 @@ public class ModelTest {
 	public final void runGetterAndSetter() {
 		SA.initParameters(true);
 		Assert.assertEquals(Double.valueOf(5.08351893845611), Double.valueOf(SA.getDecay()));
-		Assert.assertEquals(Long.valueOf(36000), Long.valueOf(SA.getIterations()));
-		Assert.assertEquals(Long.valueOf(30), Long.valueOf(SA.getSteps()));
+		Assert.assertEquals(Long.valueOf(108000), Long.valueOf(SA.getIterations()));
+		Assert.assertEquals(Long.valueOf(20), Long.valueOf(SA.getSteps()));
 		Assert.assertEquals(Double.valueOf(0.1), Double.valueOf(SA.getTemperature()));
 
 		SA.setDecay(0.5);

@@ -53,7 +53,11 @@ public final class ImportCSV {
 	/** buffer for imported files */
 	private List<String> linesCallerCallee, linesNodesCluster;
 
-	/** counts for each node how often called from another node */
+	/**
+	 * This map is used to count how often each node is called from another
+	 * node. If there are more callers than the pruneThreshold, this node will
+	 * not be imported.
+	 */
 	private final Map<String, Integer> calledNodesCountMap = new HashMap<String, Integer>(Model.DEFAULT_SIZE_NODE_NUMBER);
 
 	private final Map<String, Node> createdNodesMap = new HashMap<String, Node>(Model.DEFAULT_SIZE_NODE_NUMBER);
@@ -65,28 +69,36 @@ public final class ImportCSV {
 	private final Map<String, Cluster> createdClusterMap = new HashMap<String, Cluster>(Model.DEFAULT_SIZE_CLUSTER_NUMBER);
 	private final Map<String, Boolean> prunedClusterMap = new HashMap<String, Boolean>(Model.DEFAULT_SIZE_CLUSTER_NUMBER);
 
-	private int prune = 1000;
+	private int pruneThreshold = 1000;
 
-	private Model model;
+	private Model model = null;
 
-	public boolean importModel(final Model model, final String fileNameCallerCallee, final String fileNameNodesCluster, final int prune) {
-		if (null == model) {
+	public ImportCSV(Model model, int pruneThreshold) {
+
+		LOGGER.info(String.format("prune threshold %d", pruneThreshold));
+		this.pruneThreshold = pruneThreshold;
+
+		this.model = model;
+		if (null != this.model) {
+			this.model.getStatus().reset();
+
+			// create default cluster
+			final Cluster value = new Cluster(Model.DEFAULT_CLUSTER_NAME);
+			createdClusterMap.put(Model.DEFAULT_CLUSTER_NAME, value);
+			model.getClusters().add(value);
+			LOGGER.info("");
+		}
+	}
+
+	public boolean importModel(String fileNameCallerCallee, String fileNameNodeCluster) {
+
+		if (null == this.model) {
 			return false;
 		}
 
-		LOGGER.info(String.format("prune level %d", prune));
-		this.prune = prune;
-		this.model = model;
-		this.model.getStatus().reset();
-
-		// create default cluster
-		final Cluster value = new Cluster(Model.DEFAULT_CLUSTER_NAME);
-		createdClusterMap.put(Model.DEFAULT_CLUSTER_NAME, value);
-		model.getClusters().add(value);
-
-		LOGGER.info("");
 		linesCallerCallee = inportLines(fileNameCallerCallee);
-		linesNodesCluster = inportLines(fileNameNodesCluster);
+
+		linesNodesCluster = inportLines(fileNameNodeCluster);
 
 		initNodesPruneMap();
 
@@ -113,20 +125,20 @@ public final class ImportCSV {
 		for (String line : linesNodesCluster) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
-				final String targetName = tokenList.get(0).trim().replaceAll("\"", "");
-				final String clusterName = tokenList.get(1).trim().replaceAll("\"", "");
+				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
+				final String cluster = tokenList.get(1).trim().replaceAll("\"", "");
 
-				if (!createdClusterMap.containsKey(clusterName)) {
+				if (!createdClusterMap.containsKey(cluster)) {
 
-					if (null != calledNodesCountMap.get(targetName) && calledNodesCountMap.get(targetName) > prune) {
-						prunedClusterMap.put(clusterName, Boolean.TRUE);
+					if (isNodePruned(caller)) {
+						prunedClusterMap.put(cluster, Boolean.TRUE);
 					} else {
 						// Create cluster node
 						Cluster clusterNew = null;
-						final String clusterNodeName = "C@" + clusterName;
+						final String clusterNodeName = "C@" + cluster;
 						Node clusterNode = createdNodesMap.get(clusterNodeName);
 						if (null == clusterNode) {
-							clusterNew = new Cluster(clusterName);
+							clusterNew = new Cluster(cluster);
 							clusterNode = new Node(clusterNodeName, clusterNew.getName(), clusterNew, true);
 							createdNodesMap.put(clusterNodeName, clusterNode);
 							model.getNodes().add(clusterNode);
@@ -135,11 +147,11 @@ public final class ImportCSV {
 						} else {
 							clusterNew = createdClusterMap.get(clusterNodeName);
 						}
-						// Create node
-						Node node = createdNodesMap.get(targetName);
+						// Create node in cases it doesn't exists
+						Node node = createdNodesMap.get(caller);
 						if (null == node) {
-							node = new Node(targetName, clusterNew.getName(), clusterNew, false);
-							createdNodesMap.put(targetName, node);
+							node = new Node(caller, clusterNew.getName(), clusterNew, false);
+							createdNodesMap.put(caller, node);
 							model.getNodes().add(node);
 						}
 
@@ -156,6 +168,7 @@ public final class ImportCSV {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
 				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
+
 				if (!calledNodesCountMap.containsKey(caller)) {
 					calledNodesCountMap.put(caller, Integer.valueOf(0));
 				}
@@ -168,13 +181,13 @@ public final class ImportCSV {
 		for (String line : linesCallerCallee) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
-				final String callee = tokenList.get(1).trim().replaceAll("\"", "");
 				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
-				final Cluster sourceCluster = createdClusterMap.get(Model.DEFAULT_CLUSTER_NAME);
+				final String callee = tokenList.get(1).trim().replaceAll("\"", "");
 
-				if (null != calledNodesCountMap.get(callee) && calledNodesCountMap.get(callee) > prune) {
+				if (isNodePruned(callee)) {
 					prunedNodesMap.put(callee, Boolean.TRUE);
 				} else {
+					final Cluster sourceCluster = createdClusterMap.get(Model.DEFAULT_CLUSTER_NAME);
 					if (!createdNodesMap.containsKey(callee)) {
 						Node item = createdNodesMap.get(callee);
 						if (null == item) {
@@ -191,7 +204,7 @@ public final class ImportCSV {
 					}
 				}
 
-				if (null != calledNodesCountMap.get(caller) && calledNodesCountMap.get(caller) > prune) {
+				if (isNodePruned(caller)) {
 					prunedNodesMap.put(caller, Boolean.TRUE);
 				} else {
 					if (!createdNodesMap.containsKey(caller)) {
@@ -217,7 +230,8 @@ public final class ImportCSV {
 			if (2 == tokenList.size()) {
 				final String sourceName = tokenList.get(1).trim().replaceAll("\"", "");
 				final String targetName = tokenList.get(0).trim().replaceAll("\"", "");
-				if (calledNodesCountMap.get(targetName) > prune) {
+
+				if (isNodePruned(targetName)) {
 					prunedLinksMap.put(sourceName + "->" + targetName, Boolean.TRUE);
 				} else {
 					if (createdNodesMap.containsKey(sourceName) && createdNodesMap.containsKey(targetName)) {
@@ -255,6 +269,10 @@ public final class ImportCSV {
 		}
 		LOGGER.info(String.format("file '%s' imported %d lines", fileName, result.size()));
 		return result;
+	}
+
+	private boolean isNodePruned(final String node) {
+		return null != calledNodesCountMap.get(node) && calledNodesCountMap.get(node) > pruneThreshold;
 	}
 
 }

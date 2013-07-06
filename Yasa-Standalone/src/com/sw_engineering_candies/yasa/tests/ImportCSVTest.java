@@ -47,13 +47,13 @@ public class ImportCSVTest {
 
 	@Test
 	public final void testImportModelNoModel() {
-		Assert.assertFalse(new ImportCSV().importModel(null,  ModelTest.YASA_INPUT_CSV, ModelTest.YASA_INPUT_NODE_CLUSTER_CSV, 10));
+		Assert.assertFalse(new ImportCSV(null, 10).importModel(ModelTest.YASA_INPUT_CSV, ModelTest.YASA_INPUT_NODE_CLUSTER_CSV));
 	}
 
 	@Test
 	public final void testImportModel() {
 		final Model model = new Model();
-		Assert.assertTrue(new ImportCSV().importModel(model, ModelTest.YASA_INPUT_CSV, ModelTest.YASA_INPUT_NODE_CLUSTER_CSV, 10));
+		Assert.assertTrue(new ImportCSV(model, 10).importModel(ModelTest.YASA_INPUT_CSV, ModelTest.YASA_INPUT_NODE_CLUSTER_CSV));
 	}
 
 	@AfterClass

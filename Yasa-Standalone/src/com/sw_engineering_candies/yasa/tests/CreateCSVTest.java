@@ -47,7 +47,7 @@ import com.sw_engineering_candies.yasa.model.Model;
 
 public final class CreateCSVTest {
 
-	private static final String INPUT_CSV = ModelTest.IMPORT_PATH + "yasa-input-small.csv";
+	private static final String INPUT_CSV = ModelTest.IMPORT_PATH + "input-caller-callee.csv";
 
 	private static final String INPUT_CSV_EXPECTED = ModelTest.IMPORT_PATH + "yasa-input-test.csv";
 
@@ -95,8 +95,8 @@ public final class CreateCSVTest {
 	@Test
 	public void basicTest() {
 		final Model sa = new Model();
-		Assert.assertTrue("import file not valid", new ImportCSV().importModel(sa, ModelTest.IMPORT_PATH
-				+ "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv", 10));
+		Assert.assertTrue("import file not valid",
+				new ImportCSV(sa, 10).importModel(ModelTest.IMPORT_PATH + "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv"));
 		inputFileAsString = getFileAsString(INPUT_CSV);
 
 		final boolean exportData = CreateCSV.exportData(sa, INPUT_CSV_EXPECTED);
