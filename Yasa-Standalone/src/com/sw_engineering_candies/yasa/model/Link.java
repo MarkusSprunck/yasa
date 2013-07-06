@@ -34,27 +34,27 @@ package com.sw_engineering_candies.yasa.model;
 public final class Link {
 
 	/** source node of this link, i.e. the calling component */
-	private final Node source;
+	private final Node caller;
 
 	/** target node of this link, i.e. the called component */
-	private final Node target;
+	private final Node callee;
 
 	private final boolean clusterLink;
 
-	public Link(final Node sourceNode, final Node targetNode, final boolean clusterLink) {
-		this.source = sourceNode;
-		this.target = targetNode;
-		this.source.getLinks().add(this);
-		this.target.getLinks().add(this);
+	public Link(final Node caller, final Node callee, final boolean clusterLink) {
+		this.caller = caller;
+		this.callee = callee;
+		this.caller.getLinks().add(this);
+		this.callee.getLinks().add(this);
 		this.clusterLink = clusterLink;
 	}
 
-	public Node getSource() {
-		return source;
+	public Node getCaller() {
+		return caller;
 	}
 
-	public Node getTarget() {
-		return target;
+	public Node getCallee() {
+		return callee;
 	}
 
 	public boolean isClusterLink() {

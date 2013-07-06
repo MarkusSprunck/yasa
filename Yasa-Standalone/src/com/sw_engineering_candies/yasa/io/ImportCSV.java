@@ -33,10 +33,10 @@ package com.sw_engineering_candies.yasa.io;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -73,7 +73,7 @@ public final class ImportCSV {
 
 	private Model model = null;
 
-	public ImportCSV(Model model, int pruneThreshold) {
+	public ImportCSV(final Model model, final int pruneThreshold) {
 
 		LOGGER.info(String.format("prune threshold %d", pruneThreshold));
 		this.pruneThreshold = pruneThreshold;
@@ -90,7 +90,7 @@ public final class ImportCSV {
 		}
 	}
 
-	public boolean importModel(String fileNameCallerCallee, String fileNameNodeCluster) {
+	public boolean importModel(final String fileNameCallerCallee, final String fileNameNodeCluster) {
 
 		if (null == this.model) {
 			return false;
@@ -122,7 +122,7 @@ public final class ImportCSV {
 	}
 
 	private void createCluster() {
-		for (String line : linesNodesCluster) {
+		for (final String line : linesNodesCluster) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
 				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
@@ -164,7 +164,7 @@ public final class ImportCSV {
 	}
 
 	private void initNodesPruneMap() {
-		for (String line : linesCallerCallee) {
+		for (final String line : linesCallerCallee) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
 				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
@@ -178,7 +178,7 @@ public final class ImportCSV {
 	}
 
 	private void createNodes() {
-		for (String line : linesCallerCallee) {
+		for (final String line : linesCallerCallee) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
 				final String caller = tokenList.get(0).trim().replaceAll("\"", "");
@@ -225,7 +225,7 @@ public final class ImportCSV {
 	}
 
 	private void createLinks() {
-		for (String line : linesCallerCallee) {
+		for (final String line : linesCallerCallee) {
 			final List<String> tokenList = FileUtility.tokenizeString(line, ";");
 			if (2 == tokenList.size()) {
 				final String sourceName = tokenList.get(1).trim().replaceAll("\"", "");
@@ -244,7 +244,7 @@ public final class ImportCSV {
 	}
 
 	private List<String> inportLines(final String fileName) {
-		List<String> result = new ArrayList<String>(Model.DEFAULT_SIZE_NODE_NUMBER);
+		final List<String> result = new ArrayList<String>(Model.DEFAULT_SIZE_NODE_NUMBER);
 		BufferedReader bufferedReader = null;
 		try {
 			bufferedReader = new BufferedReader(new FileReader(fileName));

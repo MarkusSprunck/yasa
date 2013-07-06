@@ -30,9 +30,9 @@
  */
 package com.sw_engineering_candies.yasa.model;
 
+/** simulation parameter */
 interface Parameter {
 
-	/** simulation parameter */
 	double RUN_DECAY = 1.5;
 
 	double TEMPERATURE = 0.1;

@@ -36,13 +36,14 @@ import java.util.List;
 
 public final class Cluster {
 
+	private static final int INITIAL_CAPACITY = Model.DEFAULT_SIZE_NODE_NUMBER / Model.DEFAULT_SIZE_CLUSTER_NUMBER;
+
+	private final List<Node> nodesList = new ArrayList<Node>(INITIAL_CAPACITY);
+
 	private final String name;
 
-	private final List<Node> nodesList = new ArrayList<Node>(Model.DEFAULT_SIZE_NODE_NUMBER
-			/ Model.DEFAULT_SIZE_CLUSTER_NUMBER);
-
-	public Cluster(final String n) {
-		this.name = n;
+	public Cluster(final String name) {
+		this.name = name;
 	}
 
 	void addNode(final Node node) {

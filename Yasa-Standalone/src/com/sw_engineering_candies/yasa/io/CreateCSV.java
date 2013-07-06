@@ -33,15 +33,11 @@ package com.sw_engineering_candies.yasa.io;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.sw_engineering_candies.yasa.model.Cluster;
 import com.sw_engineering_candies.yasa.model.Link;
 import com.sw_engineering_candies.yasa.model.Model;
-import com.sw_engineering_candies.yasa.model.Node;
 
 public final class CreateCSV {
 
@@ -60,9 +56,9 @@ public final class CreateCSV {
 			try {
 				for (final Link link : model.getLinks()) {
 					if (!link.isClusterLink()) {
-						fw.append(link.getTarget().getName());
+						fw.append(link.getCallee().getName());
 						fw.append(";");
-						fw.append(link.getSource().getName());
+						fw.append(link.getCaller().getName());
 						fw.append(System.getProperty("line.separator"));
 					}
 				}
@@ -83,9 +79,9 @@ public final class CreateCSV {
 			try {
 				for (final Link link : model.getLinks()) {
 					if (link.isClusterLink()) {
-						fw.append(link.getTarget().getName());
+						fw.append(link.getCallee().getName());
 						fw.append(";");
-						fw.append(link.getSource().getName().replace("C@", ""));
+						fw.append(link.getCaller().getName().replace("C@", ""));
 						fw.append(System.getProperty("line.separator"));
 					}
 				}

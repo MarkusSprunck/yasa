@@ -56,11 +56,11 @@ public final class Model implements Parameter {
 	private final List<Node> nodes = new ArrayList<Node>(DEFAULT_SIZE_NODE_NUMBER);
 
 	/** list of all links in the model */
-	private static final int DEFAULT_SIZE_LINK_NUMBER = 50000;
+	private static final int DEFAULT_SIZE_LINK_NUMBER = 10000;
 	private final List<Link> links = new ArrayList<Link>(DEFAULT_SIZE_LINK_NUMBER);
 
 	/** list of all clusters in the model; used for random access by name */
-	public static final int DEFAULT_SIZE_CLUSTER_NUMBER = 20;
+	public static final int DEFAULT_SIZE_CLUSTER_NUMBER = 100;
 	private final List<Cluster> clusters = new ArrayList<Cluster>(DEFAULT_SIZE_CLUSTER_NUMBER);
 
 	/** stores the current status during the optimization */
@@ -123,14 +123,14 @@ public final class Model implements Parameter {
 	public long getPositionDeltaCost(final Node node) {
 		long cost = 0L;
 		for (final Link link : node.getLinks()) {
-			final Node target = link.getTarget();
-			final long target1 = (node.getColumn() - target.getColumn()) * (node.getColumn() - target.getColumn())
-					+ (node.getRow() - target.getRow()) * (node.getRow() - target.getRow());
+			final Node target = link.getCallee();
+			final long target1 = (node.getColumn() - target.getColumn()) * (node.getColumn() - target.getColumn()) + (node.getRow() - target.getRow())
+					* (node.getRow() - target.getRow());
 			cost += target1 == 1 ? 0 : link.isClusterLink() ? target1 : 2 * target1;
 
-			final Node source = link.getSource();
-			final long source1 = (node.getColumn() - source.getColumn()) * (node.getColumn() - source.getColumn())
-					+ (node.getRow() - source.getRow()) * (node.getRow() - source.getRow());
+			final Node source = link.getCaller();
+			final long source1 = (node.getColumn() - source.getColumn()) * (node.getColumn() - source.getColumn()) + (node.getRow() - source.getRow())
+					* (node.getRow() - source.getRow());
 			cost += source1 == 1 ? 0 : link.isClusterLink() ? source1 : 2 * source1;
 		}
 		return cost;
@@ -138,10 +138,10 @@ public final class Model implements Parameter {
 
 	private static long getLinkCost(final Link link, final Node node) {
 
-		if (link.getSource() == node) {
-			return node.getCluster() != link.getTarget().getCluster() ? COST_FACTOR_LINKS : 0;
+		if (link.getCaller() == node) {
+			return node.getCluster() != link.getCallee().getCluster() ? COST_FACTOR_LINKS : 0;
 		} else {
-			return node.getCluster() != link.getSource().getCluster() ? COST_FACTOR_LINKS : 0;
+			return node.getCluster() != link.getCaller().getCluster() ? COST_FACTOR_LINKS : 0;
 		}
 	}
 
@@ -163,14 +163,12 @@ public final class Model implements Parameter {
 	}
 
 	private double evaluateNodePositionCandidate(final double currentCost) {
-	//	do {
-			// remember the old state
-			int index = (int) Math.round(Math.floor(Math.random() * nodes.size()));
-			firstNode = nodes.get(index);
+		// remember the old state
+		int index = (int) Math.round(Math.floor(Math.random() * nodes.size()));
+		firstNode = nodes.get(index);
 
-			index = (int) Math.round(Math.floor(Math.random() * nodes.size()));
-			secondNode = nodes.get(index);
-	//	} while (firstNode != secondNode);
+		index = (int) Math.round(Math.floor(Math.random() * nodes.size()));
+		secondNode = nodes.get(index);
 
 		final double oldDeltaCostFunction;
 		oldDeltaCostFunction = getPositionDeltaCost(firstNode) + getPositionDeltaCost(secondNode);
@@ -318,7 +316,6 @@ public final class Model implements Parameter {
 			LOGGER.debug(s1 + s2 + s3 + s4 + s5 + s6 + s7);
 		} else {
 			LOGGER.debug(s1 + "       -         -         -         -         -" + s7);
-
 		}
 	}
 
@@ -357,6 +354,7 @@ public final class Model implements Parameter {
 				break;
 			}
 		}
+
 		LOGGER.info("-----------------------------------------------------------------------");
 		LOGGER.info("");
 
@@ -372,7 +370,6 @@ public final class Model implements Parameter {
 		firstCluster = oldCluster;
 	}
 
-	
 	public void initNodePostion() {
 		setColumns((int) Math.sqrt(getNodeCount()) - 1);
 		int x = 0;
@@ -389,8 +386,7 @@ public final class Model implements Parameter {
 			}
 		}
 	}
-	
-	
+
 	public long getIterations() {
 		return iterations;
 	}
@@ -446,6 +442,5 @@ public final class Model implements Parameter {
 				}
 			}
 		}
-
 	}
 }

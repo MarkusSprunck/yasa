@@ -53,13 +53,10 @@ public final class CreateSVG {
 
 	private FileWriter fw = null;
 
-	private Model model;
-
 	/** standard logger (see log4j.properties file for details) */
 	private static final Logger LOGGER = Logger.getLogger(CreateSVG.class);
 
 	public boolean exportData(final Model model, final String exportFileName, final boolean colorCluster) {
-		this.model = model;
 		fw = FileUtility.createFileWriter(exportFileName);
 		if (null != fw) {
 			try {
@@ -71,22 +68,21 @@ public final class CreateSVG {
 				createStart(canvas);
 
 				for (final Link link : model.getLinks()) {
-					final Integer sourceClusterPos = model.getClusters().indexOf(link.getSource().getCluster());
+					final Integer sourceClusterPos = model.getClusters().indexOf(link.getCaller().getCluster());
 					final String clusterColor = getClusterColor(sourceClusterPos);
 
-					if (link.getSource().isClusterNode()) {
-						final Point source = nodePosCenter(new Point(0, 0), link.getSource(), model.getColumns());
-						final Point target = nodePosMoved(new Point(0, 0), link.getTarget(), model.getColumns());
+					if (link.getCaller().isClusterNode()) {
+						final Point source = nodePosCenter(new Point(0, 0), link.getCaller(), model.getColumns());
+						final Point target = nodePosMoved(new Point(0, 0), link.getCallee(), model.getColumns());
 						drawLine(source, target, lineSize, link.isClusterLink(), clusterColor, false);
-					} else if (link.getTarget().isClusterNode()) {
-						final Point source = nodePosMoved(new Point(0, 0), link.getSource(), model.getColumns());
-						final Point target = nodePosCenter(new Point(0, 0), link.getTarget(), model.getColumns());
+					} else if (link.getCallee().isClusterNode()) {
+						final Point source = nodePosMoved(new Point(0, 0), link.getCaller(), model.getColumns());
+						final Point target = nodePosCenter(new Point(0, 0), link.getCallee(), model.getColumns());
 						drawLine(source, target, lineSize, link.isClusterLink(), clusterColor, false);
 					} else {
-						final Point source = nodePosMoved(new Point(0, 0), link.getSource(), model.getColumns());
-						final Point target = nodePosMoved(new Point(0, 0), link.getTarget(), model.getColumns());
-						drawLine(source, target, lineSize, link.isClusterLink(), clusterColor, link.getSource()
-								.getCluster() != link.getTarget().getCluster());
+						final Point source = nodePosMoved(new Point(0, 0), link.getCaller(), model.getColumns());
+						final Point target = nodePosMoved(new Point(0, 0), link.getCallee(), model.getColumns());
+						drawLine(source, target, lineSize, link.isClusterLink(), clusterColor, link.getCaller().getCluster() != link.getCallee().getCluster());
 					}
 				}
 				for (final Node node : model.getNodes()) {
@@ -95,11 +91,11 @@ public final class CreateSVG {
 					if (node.isClusterNode()) {
 						final Point center = nodePosCenter(new Point(0, 0), node, model.getColumns());
 						drawRect(center, radius, clusterColor);
-						drawText(center, " ", node.getCluster().getName(), " ",  rectLength, fontSize);
+						drawText(center, " ", node.getCluster().getName(), " ", rectLength, fontSize);
 					} else {
 						final Point center = nodePosMoved(new Point(0, 0), node, model.getColumns());
 						drawCircle(center, radius, clusterColor);
-						drawText(center, " ", node.getName(), " ",  rectLength, fontSize);
+						drawText(center, " ", node.getName(), " ", rectLength, fontSize);
 					}
 				}
 
@@ -125,14 +121,13 @@ public final class CreateSVG {
 	}
 
 	private Point nodePosMoved(final Point p, final Node n, final int i) {
-		p.setLocation(nodePosCenter(p, n, i).x , nodePosCenter(p, n, i).y );
+		p.setLocation(nodePosCenter(p, n, i).x, nodePosCenter(p, n, i).y);
 		return p;
 	}
 
 	private static final String[] COLORS = new String[] {//
-	"gainsboro", "gold", "yellowgreen", "deeppink", "darkviolet", "forestgreen", "cornflowerblue", "deepskyblue",
-			"slategray", "turquoise", "wheat", "darkcyan", "darkolivegreen", "lawngreen", "paleturquoise", "yellow",
-			"orangered", "brown", "dodgerblue" };
+	"gainsboro", "gold", "yellowgreen", "deeppink", "darkviolet", "forestgreen", "cornflowerblue", "deepskyblue", "slategray", "turquoise", "wheat",
+			"darkcyan", "darkolivegreen", "lawngreen", "paleturquoise", "yellow", "orangered", "brown", "dodgerblue" };
 
 	private void createEnd() throws IOException {
 		fw.append("</g>\n\n</svg>\n");
@@ -140,65 +135,58 @@ public final class CreateSVG {
 
 	private void createStart(final Point point) throws IOException {
 		fw.append("<?xml version='1.0'?>\n");
-		fw.append(String.format(LOCALE, "<svg xmlns='http://www.w3.org/2000/svg' "
-				+ "width=\"%.1f\" height=\"%.1f\" x=\"0\" y=\"0\">\n", point.getX(), point.getY()));
+		fw.append(String.format(LOCALE, "<svg xmlns='http://www.w3.org/2000/svg' " + "width=\"%.1f\" height=\"%.1f\" x=\"0\" y=\"0\">\n", point.getX(),
+				point.getY()));
 		fw.append("<g id=\"my_root\" style=\"stroke-width:1.0\" >\n");
 		// define the arrow marker
 		fw.append("<defs>");
 		fw.append("<marker id=\"MidMarkerblue\" viewBox = \"0 0 10 10\" refX = \"1\" "
-				+ "refY = \"5\" markerUnits=\"strokeWidth\" markerWidth = \"5\" markerHeight = \"5\" "
-				+ "fill = \"none\" orient = \"auto\" >");
+				+ "refY = \"5\" markerUnits=\"strokeWidth\" markerWidth = \"5\" markerHeight = \"5\" " + "fill = \"none\" orient = \"auto\" >");
 		fw.append("<polyline points=\"0,0 10,5 0,10 1,5\" fill=\"blue\" />");
 		fw.append("</marker>");
 		fw.append("</defs>");
 		fw.append("<defs>");
 		fw.append("<marker id=\"MidMarkerred\" viewBox = \"0 0 10 10\" refX = \"1\" "
-				+ "refY = \"5\" markerUnits=\"strokeWidth\" markerWidth = \"5\" markerHeight = \"5\" "
-				+ "fill = \"none\" orient = \"auto\" >");
+				+ "refY = \"5\" markerUnits=\"strokeWidth\" markerWidth = \"5\" markerHeight = \"5\" " + "fill = \"none\" orient = \"auto\" >");
 		fw.append("<polyline points=\"0,0 10,5 0,10 1,5\" fill=\"red\" />");
 		fw.append("</marker>");
 		fw.append("</defs>");
 	}
 
-	private void drawText(final Point center, final String line1, final String line2, final String line3,
-			final double rectLength, final double fontSize) throws IOException {
+	private void drawText(final Point center, final String line1, final String line2, final String line3, final double rectLength, final double fontSize)
+			throws IOException {
 		final double x = center.getX();
 		final double y = center.getY() - fontSize * 0.8;
-		fw.append(String.format(LOCALE,
-				"<text x=\"%.1f\" y=\"%.1f\" text-anchor=\"middle\"  style=\"stroke-width:0.0;fill:black;"
-						+ "font-size:%.2f;font-family:Arial\" >" + "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan> "
-						+ "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan> " + "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan>"
-						+ "</text>\n", x, y, fontSize, x, line1, x, line2, x, line3));
+		fw.append(String.format(LOCALE, "<text x=\"%.1f\" y=\"%.1f\" text-anchor=\"middle\"  style=\"stroke-width:0.0;fill:black;"
+				+ "font-size:%.2f;font-family:Arial\" >" + "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan> " + "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan> "
+				+ "<tspan x=\"%.1f\" dy=\"1.2em\">%s</tspan>" + "</text>\n", x, y, fontSize, x, line1, x, line2, x, line3));
 
 	}
 
 	private void drawCircle(final Point center, final double radius, final String color) throws IOException {
-		fw.append(String.format(LOCALE, "<circle cx=\"%.1f\" cy=\"%.1f\" r=\"%.3f\" fill=\"%s\" stroke=\"%s\" />\n",
-				center.getX(), center.getY(), radius, color, color));
+		fw.append(String.format(LOCALE, "<circle cx=\"%.1f\" cy=\"%.1f\" r=\"%.3f\" fill=\"%s\" stroke=\"%s\" />\n", center.getX(), center.getY(), radius,
+				color, color));
 	}
 
 	private void drawRect(final Point sourcePos, final double d, final String color) throws IOException {
-		fw.append(String.format(LOCALE, "<rect x=\"%.1f\" y=\"%.1f\" width=\"%.1f\" height=\"%.1f\"" + " style=\"fill:"
-				+ "white" + "\" " + "stroke=\"" + color + "\" " + " />\n", sourcePos.getX() - d, sourcePos.getY() - d,
-				d * 2, d * 2));
+		fw.append(String.format(LOCALE, "<rect x=\"%.1f\" y=\"%.1f\" width=\"%.1f\" height=\"%.1f\"" + " style=\"fill:" + "white" + "\" " + "stroke=\"" + color
+				+ "\" " + " />\n", sourcePos.getX() - d, sourcePos.getY() - d, d * 2, d * 2));
 	}
 
-	private void drawLine(final Point from, final Point to, final double lineSize, final boolean b, final String color,
-			final boolean crossCluster) throws IOException {
+	private void drawLine(final Point from, final Point to, final double lineSize, final boolean b, final String color, final boolean crossCluster)
+			throws IOException {
 
 		final double middleX = (from.getX() + to.getX()) / 2;
 		final double middleY = (from.getY() + to.getY()) / 2;
 
 		if (b) {
-			fw.append(String
-					.format(LOCALE,
-							"<path fill=\"none\" stroke-width=\"1\" stroke=\"%s\" stroke-dasharray=\"1,3\"  d=\"M %.1f %.1f %.1f %.1f \"   />",
-							color, from.getX(), from.getY(), to.getX(), to.getY()));
+			fw.append(String.format(LOCALE, "<path fill=\"none\" stroke-width=\"1\" stroke=\"%s\" stroke-dasharray=\"1,3\"  d=\"M %.1f %.1f %.1f %.1f \"   />",
+					color, from.getX(), from.getY(), to.getX(), to.getY()));
 		} else {
 			final String lineColor = crossCluster ? "red" : "blue";
 			fw.append(String.format(LOCALE, "<path fill=\"none\"  marker-mid=\"url(#MidMarker%s)\" "
-					+ "stroke=\"%s\"  d=\"M %.1f %.1f T %.1f %.1f %.1f %.1f \"   />", lineColor, lineColor,
-					from.getX(), from.getY(), middleX, middleY, to.getX(), to.getY()));
+					+ "stroke=\"%s\"  d=\"M %.1f %.1f T %.1f %.1f %.1f %.1f \"   />", lineColor, lineColor, from.getX(), from.getY(), middleX, middleY,
+					to.getX(), to.getY()));
 		}
 
 	}
@@ -206,6 +194,5 @@ public final class CreateSVG {
 	private static String[] getColorMap() {
 		return COLORS;
 	}
-
 
 }

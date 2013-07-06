@@ -60,7 +60,7 @@ public final class CreateCSVTest {
 	public static void cleanUp() {
 		final File f1 = new File(OUPUT_CSV_NODE_CLUSTER);
 		Assert.assertTrue(f1.delete());
-		
+
 		final File f2 = new File(OUPUT_CSV_CALLER_CALLEE);
 		Assert.assertTrue(f2.delete());
 	}
@@ -101,15 +101,15 @@ public final class CreateCSVTest {
 		final boolean exportCallerCalleeData = CreateCSV.exportCallerCalleeData(sa, OUPUT_CSV_CALLER_CALLEE);
 		Assert.assertTrue("export file not valid", exportCallerCalleeData);
 
-		String inputCallerCalleeFileAsString = getFileAsString(INPUT_CSV_CALLER_CALLEE);
-		String outputCallerCalleeFileAsString = getFileAsString(OUPUT_CSV_CALLER_CALLEE);
+		final String inputCallerCalleeFileAsString = getFileAsString(INPUT_CSV_CALLER_CALLEE);
+		final String outputCallerCalleeFileAsString = getFileAsString(OUPUT_CSV_CALLER_CALLEE);
 		Assert.assertEquals(inputCallerCalleeFileAsString, outputCallerCalleeFileAsString);
 
 		final boolean exportNodeClusterData = CreateCSV.exportNodeClusterData(sa, OUPUT_CSV_NODE_CLUSTER);
 		Assert.assertTrue("export file not valid", exportNodeClusterData);
 
-		String inputNodeClusterFileAsString = getFileAsString(INPUT_CSV_NODE_CLUSTER);
-		String outputNodeClusterFileAsString = getFileAsString(OUPUT_CSV_NODE_CLUSTER);
+		final String inputNodeClusterFileAsString = getFileAsString(INPUT_CSV_NODE_CLUSTER);
+		final String outputNodeClusterFileAsString = getFileAsString(OUPUT_CSV_NODE_CLUSTER);
 		Assert.assertEquals(inputNodeClusterFileAsString, outputNodeClusterFileAsString);
 	}
 

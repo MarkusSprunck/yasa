@@ -51,8 +51,7 @@ public class StarterTest {
 	public final void testMainSuccess() {
 
 		final String[] args = new String[] {//
-		Starter.PARAMETER_T, "1.11", Starter.PARAMETER_I, "20", Starter.PARAMETER_S, "12", Starter.PARAMETER_D, "0.3",
-				Starter.PARAMETER_P, "12" };
+		Starter.PARAMETER_T, "1.11", Starter.PARAMETER_I, "20", Starter.PARAMETER_S, "12", Starter.PARAMETER_D, "0.3", Starter.PARAMETER_P, "12" };
 		Assert.assertTrue(Starter.parseCommandLine(args));
 	}
 
@@ -76,8 +75,7 @@ public class StarterTest {
 		Assert.assertFalse(Starter.parseCommandLine(args6));
 
 		final String[] args7 = new String[] {//
-		Starter.PARAMETER_T, "1.11", Starter.PARAMETER_I, "20", Starter.PARAMETER_S, "12", Starter.PARAMETER_D, "0.3",
-				Starter.PARAMETER_P };
+		Starter.PARAMETER_T, "1.11", Starter.PARAMETER_I, "20", Starter.PARAMETER_S, "12", Starter.PARAMETER_D, "0.3", Starter.PARAMETER_P };
 		Assert.assertFalse(Starter.parseCommandLine(args7));
 
 	}
