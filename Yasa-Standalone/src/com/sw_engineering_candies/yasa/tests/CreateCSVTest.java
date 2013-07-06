@@ -47,21 +47,22 @@ import com.sw_engineering_candies.yasa.model.Model;
 
 public final class CreateCSVTest {
 
-	private static final String INPUT_CSV = ModelTest.IMPORT_PATH + "input-caller-callee.csv";
+	public static final String INPUT_CSV_CALLER_CALLEE = ModelTest.IMPORT_PATH + "input-caller-callee.csv";
+	public static final String OUPUT_CSV_CALLER_CALLEE = ModelTest.IMPORT_PATH + "output-caller-callee.csv";
 
-	private static final String INPUT_CSV_EXPECTED = ModelTest.IMPORT_PATH + "yasa-input-test.csv";
+	public static final String INPUT_CSV_NODE_CLUSTER = ModelTest.IMPORT_PATH + "input-node-cluster.csv";
+	public static final String OUPUT_CSV_NODE_CLUSTER = ModelTest.IMPORT_PATH + "output-node-cluster.csv";
 
 	/** standard logger (see log4j.properties file for details) */
 	private static final Logger LOGGER = Logger.getLogger(CreateCSVTest.class);
 
-	private String inputFileAsString = "A";
-
-	private String inputFileAsStringExpected = "B";
-
 	@AfterClass
 	public static void cleanUp() {
-		final File f = new File(INPUT_CSV_EXPECTED);
-		Assert.assertTrue(f.delete());
+		final File f1 = new File(OUPUT_CSV_NODE_CLUSTER);
+		Assert.assertTrue(f1.delete());
+		
+		final File f2 = new File(OUPUT_CSV_CALLER_CALLEE);
+		Assert.assertTrue(f2.delete());
 	}
 
 	private static String getFileAsString(final String filePath) {
@@ -95,15 +96,21 @@ public final class CreateCSVTest {
 	@Test
 	public void basicTest() {
 		final Model sa = new Model();
-		Assert.assertTrue("import file not valid",
-				new ImportCSV(sa, 10).importModel(ModelTest.IMPORT_PATH + "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv"));
-		inputFileAsString = getFileAsString(INPUT_CSV);
+		Assert.assertTrue("import file not valid", new ImportCSV(sa, 10).importModel(INPUT_CSV_CALLER_CALLEE, INPUT_CSV_NODE_CLUSTER));
 
-		final boolean exportData = CreateCSV.exportData(sa, INPUT_CSV_EXPECTED);
-		Assert.assertTrue("export file not valid", exportData);
+		final boolean exportCallerCalleeData = CreateCSV.exportCallerCalleeData(sa, OUPUT_CSV_CALLER_CALLEE);
+		Assert.assertTrue("export file not valid", exportCallerCalleeData);
 
-		inputFileAsStringExpected = getFileAsString(INPUT_CSV_EXPECTED);
-		Assert.assertEquals(inputFileAsStringExpected, inputFileAsString);
+		String inputCallerCalleeFileAsString = getFileAsString(INPUT_CSV_CALLER_CALLEE);
+		String outputCallerCalleeFileAsString = getFileAsString(OUPUT_CSV_CALLER_CALLEE);
+		Assert.assertEquals(inputCallerCalleeFileAsString, outputCallerCalleeFileAsString);
+
+		final boolean exportNodeClusterData = CreateCSV.exportNodeClusterData(sa, OUPUT_CSV_NODE_CLUSTER);
+		Assert.assertTrue("export file not valid", exportNodeClusterData);
+
+		String inputNodeClusterFileAsString = getFileAsString(INPUT_CSV_NODE_CLUSTER);
+		String outputNodeClusterFileAsString = getFileAsString(OUPUT_CSV_NODE_CLUSTER);
+		Assert.assertEquals(inputNodeClusterFileAsString, outputNodeClusterFileAsString);
 	}
 
 }

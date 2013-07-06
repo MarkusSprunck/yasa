@@ -46,9 +46,6 @@ public class ModelTest {
 
 	static final String IMPORT_FILE_NOT_VALID = "import file not valid";
 
-	static final String YASA_INPUT_CSV = "input-caller-callee.csv";
-	static final String YASA_INPUT_NODE_CLUSTER_CSV = "input-node-cluster.csv";
-
 	private static final String EXPORT_FILE_NOT_VALID = "export file not valid";
 	private static final String YASA_INPUT_SVG = "yasa-input.svg";
 
@@ -73,7 +70,7 @@ public class ModelTest {
 		SA.setIterations(10);
 		SA.run();
 		final CreateSVG createSVG = new CreateSVG();
-		Assert.assertTrue(EXPORT_FILE_NOT_VALID, CreateCSV.exportData(SA, IMPORT_PATH + "yasa-output.csv"));
+		Assert.assertTrue(EXPORT_FILE_NOT_VALID, CreateCSV.exportCallerCalleeData(SA, IMPORT_PATH + "yasa-output.csv"));
 		Assert.assertTrue(EXPORT_FILE_NOT_VALID, createSVG.exportData(SA, IMPORT_PATH + "yasa-output.svg", false));
 	}
 
@@ -83,7 +80,7 @@ public class ModelTest {
 		SA.setIterations(10);
 		SA.run();
 		final CreateSVG createSVG = new CreateSVG();
-		Assert.assertTrue(EXPORT_FILE_NOT_VALID, CreateCSV.exportData(SA, IMPORT_PATH + "yasa-output.csv"));
+		Assert.assertTrue(EXPORT_FILE_NOT_VALID, CreateCSV.exportCallerCalleeData(SA, IMPORT_PATH + "yasa-output.csv"));
 		Assert.assertTrue(EXPORT_FILE_NOT_VALID, createSVG.exportData(SA, IMPORT_PATH + "yasa-output.svg", false));
 	}
 

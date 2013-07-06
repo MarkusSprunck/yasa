@@ -135,7 +135,7 @@ public final class Starter {
 			sa.run();
 
 			createSVG.exportData(sa, "yasa-output.svg", true);
-			CreateCSV.exportData(sa, "yasa-output.csv");
+			CreateCSV.exportCallerCalleeData(sa, "yasa-output.csv");
 			CreateHTML.createFile("yasa-result.html");
 		}
 		LOGGER.info("");

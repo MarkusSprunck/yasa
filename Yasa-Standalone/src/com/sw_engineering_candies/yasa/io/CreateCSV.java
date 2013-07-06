@@ -33,11 +33,15 @@ package com.sw_engineering_candies.yasa.io;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.sw_engineering_candies.yasa.model.Cluster;
 import com.sw_engineering_candies.yasa.model.Link;
 import com.sw_engineering_candies.yasa.model.Model;
+import com.sw_engineering_candies.yasa.model.Node;
 
 public final class CreateCSV {
 
@@ -50,7 +54,7 @@ public final class CreateCSV {
 	/** standard logger (see log4j.properties file for details) */
 	private static final Logger LOGGER = Logger.getLogger(CreateCSV.class);
 
-	public static boolean exportData(final Model model, final String exportFileName) {
+	public static boolean exportCallerCalleeData(final Model model, final String exportFileName) {
 		final FileWriter fw = FileUtility.createFileWriter(exportFileName);
 		if (null != fw) {
 			try {
@@ -59,6 +63,29 @@ public final class CreateCSV {
 						fw.append(link.getTarget().getName());
 						fw.append(";");
 						fw.append(link.getSource().getName());
+						fw.append(System.getProperty("line.separator"));
+					}
+				}
+				fw.close();
+				return true;
+			} catch (final IOException e) {
+				LOGGER.error(e.getMessage());
+			}
+		} else {
+			LOGGER.error("no valid file writer created");
+		}
+		return false;
+	}
+
+	public static boolean exportNodeClusterData(final Model model, final String exportFileName) {
+		final FileWriter fw = FileUtility.createFileWriter(exportFileName);
+		if (null != fw) {
+			try {
+				for (final Link link : model.getLinks()) {
+					if (link.isClusterLink()) {
+						fw.append(link.getTarget().getName());
+						fw.append(";");
+						fw.append(link.getSource().getName().replace("C@", ""));
 						fw.append(System.getProperty("line.separator"));
 					}
 				}
