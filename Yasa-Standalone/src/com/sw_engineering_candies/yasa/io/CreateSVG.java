@@ -43,9 +43,9 @@ import com.sw_engineering_candies.yasa.model.Node;
 
 public final class CreateSVG {
 
-	private static final double OUTPUT_Y = 620.0;
+	private static final double OUTPUT_Y = 520.0;
 
-	private static final double OUTPUT_X = 600.0;
+	private static final double OUTPUT_X = 500.0;
 
 	private final Point canvas = new Point(OUTPUT_X, OUTPUT_Y);
 

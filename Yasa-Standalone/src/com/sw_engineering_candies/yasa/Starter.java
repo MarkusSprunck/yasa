@@ -114,27 +114,29 @@ public final class Starter {
 
 		if (new ImportCSV(sa, prune).importModel(fileNameCallerCallee, fileNameNodeCluster)) {
 
-			// 1. optimize the position
+			// 1. export original input data
 			final CreateSVG createSVG = new CreateSVG();
+			createSVG.exportData(sa, "yasa-step-1.svg", true);
+
+			// 2. optimize the position
 			sa.initParameters(true);
 			setParameter(sa);
 			sa.run();
-			createSVG.exportData(sa, "yasa-input-sorted.svg", true);
+			createSVG.exportData(sa, "yasa-step-2.svg", true);
 
-			// 2. optimize the cluster assignment
+			// 3. optimize the cluster assignment & reconnect the cluster nodes
 			sa.initParameters(false);
 			setParameter(sa);
 			sa.run();
-
-			// 3. reconnet the cluster nodes
 			sa.reconnectClusterNodes();
+			createSVG.exportData(sa, "yasa-step-3.svg", true);
 
 			// 4. optimize the position
 			sa.initParameters(true);
 			setParameter(sa);
 			sa.run();
-
-			createSVG.exportData(sa, "yasa-output.svg", true);
+			createSVG.exportData(sa, "yasa-step-4.svg", true);
+			
 			CreateCSV.exportCallerCalleeData(sa, "yasa-output.csv");
 			CreateHTML.createFile("yasa-result.html");
 		}

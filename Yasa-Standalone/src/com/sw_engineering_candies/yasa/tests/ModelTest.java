@@ -56,8 +56,8 @@ public class ModelTest {
 		SA = new Model();
 		Assert.assertTrue(IMPORT_FILE_NOT_VALID,
 				new ImportCSV(SA, 10).importModel(ModelTest.IMPORT_PATH + "input-caller-callee.csv", ModelTest.IMPORT_PATH + "input-node-cluster.csv"));
-		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 36, SA.getNodeCount());
-		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 43, SA.getLinkCount());
+		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 35, SA.getNodeCount());
+		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 42, SA.getLinkCount());
 		Assert.assertEquals(IMPORT_FILE_NOT_VALID, 4, SA.getClusterCount());
 
 		final CreateSVG createSVG = new CreateSVG();
@@ -87,8 +87,8 @@ public class ModelTest {
 	@Test
 	public final void runGetterAndSetter() {
 		SA.initParameters(true);
-		Assert.assertEquals(Double.valueOf(5.08351893845611), Double.valueOf(SA.getDecay()));
-		Assert.assertEquals(Long.valueOf(108000), Long.valueOf(SA.getIterations()));
+		Assert.assertEquals(Double.valueOf(5.055348061489413), Double.valueOf(SA.getDecay()));
+		Assert.assertEquals(Long.valueOf(210000), Long.valueOf(SA.getIterations()));
 		Assert.assertEquals(Long.valueOf(20), Long.valueOf(SA.getSteps()));
 		Assert.assertEquals(Double.valueOf(0.1), Double.valueOf(SA.getTemperature()));
 

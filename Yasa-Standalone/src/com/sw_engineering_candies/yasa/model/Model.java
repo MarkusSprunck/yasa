@@ -371,7 +371,7 @@ public final class Model implements Parameter {
 	}
 
 	public void initNodePostion() {
-		setColumns((int) Math.sqrt(getNodeCount()) - 1);
+		setColumns((int) Math.sqrt(getNodeCount())-1);
 		int x = 0;
 		int y = 0;
 		final List<Node> nodes = getNodes();

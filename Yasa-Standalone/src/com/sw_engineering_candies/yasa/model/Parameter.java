@@ -37,7 +37,7 @@ interface Parameter {
 
 	double TEMPERATURE = 0.1;
 
-	long ITTERATIONS_PER_NODE = 3000L;
+	long ITTERATIONS_PER_NODE = 6000L;
 
 	long STEPS = 20L;
 
