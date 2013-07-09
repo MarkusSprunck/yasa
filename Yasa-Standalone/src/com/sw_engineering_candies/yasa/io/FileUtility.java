@@ -57,7 +57,7 @@ final class FileUtility {
 				LOGGER.debug(String.format("file '%s' deleted", name));
 			}
 			if (file.createNewFile()) {
-				LOGGER.info(String.format("file '%s' created", name));
+				LOGGER.debug(String.format("file '%s' created", name));
 			}
 			return new FileWriter(file);
 		} catch (final IOException e) {

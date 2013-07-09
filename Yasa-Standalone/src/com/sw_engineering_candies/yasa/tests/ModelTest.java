@@ -90,7 +90,7 @@ public class ModelTest {
 		Assert.assertEquals(Double.valueOf(5.055348061489413), Double.valueOf(SA.getDecay()));
 		Assert.assertEquals(Long.valueOf(210000), Long.valueOf(SA.getIterations()));
 		Assert.assertEquals(Long.valueOf(20), Long.valueOf(SA.getSteps()));
-		Assert.assertEquals(Double.valueOf(0.1), Double.valueOf(SA.getTemperature()));
+		Assert.assertEquals(Double.valueOf(0.2), Double.valueOf(SA.getTemperature()));
 
 		SA.setDecay(0.5);
 		SA.setIterations(1000);

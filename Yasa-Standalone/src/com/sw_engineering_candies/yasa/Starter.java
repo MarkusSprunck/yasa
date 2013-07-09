@@ -129,13 +129,12 @@ public final class Starter {
 			setParameter(sa);
 			sa.run();
 			sa.reconnectClusterNodes();
-			createSVG.exportData(sa, "yasa-step-3.svg", true);
-
+			
 			// 4. optimize the position
 			sa.initParameters(true);
 			setParameter(sa);
 			sa.run();
-			createSVG.exportData(sa, "yasa-step-4.svg", true);
+			createSVG.exportData(sa, "yasa-step-3.svg", true);
 			
 			CreateCSV.exportCallerCalleeData(sa, "yasa-output.csv");
 			CreateHTML.createFile("yasa-result.html");

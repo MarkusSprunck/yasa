@@ -35,12 +35,12 @@ interface Parameter {
 
 	double RUN_DECAY = 1.5;
 
-	double TEMPERATURE = 0.1;
+	double TEMPERATURE = 0.2;
 
 	long ITTERATIONS_PER_NODE = 6000L;
 
 	long STEPS = 20L;
 
-	long COST_FACTOR_LINKS = 1;
+	long COST_FACTOR_LINKS = 2;
 
 }

@@ -75,7 +75,7 @@ public final class ImportCSV {
 
 	public ImportCSV(final Model model, final int pruneThreshold) {
 
-		LOGGER.info(String.format("prune threshold %d", pruneThreshold));
+		LOGGER.debug(String.format("prune threshold %d", pruneThreshold));
 		this.pruneThreshold = pruneThreshold;
 
 		this.model = model;
@@ -86,7 +86,6 @@ public final class ImportCSV {
 			final Cluster value = new Cluster(Model.DEFAULT_CLUSTER_NAME);
 			createdClusterMap.put(Model.DEFAULT_CLUSTER_NAME, value);
 			model.getClusters().add(value);
-			LOGGER.info("");
 		}
 	}
 
@@ -97,7 +96,6 @@ public final class ImportCSV {
 		}
 
 		linesCallerCallee = inportLines(fileNameCallerCallee);
-
 		linesNodesCluster = inportLines(fileNameNodeCluster);
 
 		initNodesPruneMap();
@@ -109,14 +107,9 @@ public final class ImportCSV {
 		model.initParameters(false);
 		model.initNodePostion();
 
-		LOGGER.info("");
-		LOGGER.info(String.format("created nodes         %6d \n\t%d pruned => ", createdNodesMap.size(), prunedNodesMap.size())
-				+ prunedNodesMap.keySet().toString());
-		LOGGER.info(String.format("created links         %6d \n\t%d pruned => ", createdLinksMap.size(), prunedLinksMap.size())
-				+ prunedLinksMap.keySet().toString());
-		LOGGER.info(String.format("created clusters      %6d \n\t%d pruned => ", prunedClusterMap.size(), prunedClusterMap.size())
-				+ prunedClusterMap.keySet().toString());
-		LOGGER.info("");
+		LOGGER.debug(String.format("created nodes         %6d \t%d pruned  ", createdNodesMap.size(), prunedNodesMap.size()));
+		LOGGER.debug(String.format("created links         %6d \t%d pruned  ", createdLinksMap.size(), prunedLinksMap.size()));
+		LOGGER.debug(String.format("created clusters      %6d \t%d pruned  ", prunedClusterMap.size(), prunedClusterMap.size()));
 
 		return true;
 	}

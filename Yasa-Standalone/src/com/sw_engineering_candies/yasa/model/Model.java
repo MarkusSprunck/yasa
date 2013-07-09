@@ -313,15 +313,15 @@ public final class Model implements Parameter {
 		final String s7 = String.format(" %9.2f%s", globalCost * 100, "%");
 
 		if (status.getStep() != 0) {
-			LOGGER.debug(s1 + s2 + s3 + s4 + s5 + s6 + s7);
+			LOGGER.info(s1 + s2 + s3 + s4 + s5 + s6 + s7);
 		} else {
-			LOGGER.debug(s1 + "       -         -         -         -         -" + s7);
+			LOGGER.info(s1 + "       -         -         -         -         -" + s7);
 		}
 	}
 
 	private static void outputStatusHeader() {
-		LOGGER.debug("PROGRESS TEMPERATUR     CONST    BETTER     WORSE  REJECTED       COST");
-		LOGGER.debug("");
+		LOGGER.info("PROGRESS TEMPERATUR     CONST    BETTER     WORSE  REJECTED       COST");
+		LOGGER.info("");
 	}
 
 	public void run() {
